@@ -1,0 +1,36 @@
+# Migration analysis kit — config
+# Point this at your three checked-out repos and (optionally) a Control-M export,
+# then ask preferred AI to run the "oracle-migration-analysis" workflow.
+
+repos:
+  risk_db: ""     # e.g. /home/user/checkouts/Risk_DB   (Oracle DDL, PL/SQL)
+  risk_dl: ""     # e.g. /home/user/checkouts/Risk_DL   (process + shared/common code)
+  corewm:  ""     # e.g. /home/user/checkouts/CoreWM    (majority of code)
+
+# Job scheduler export (format auto-detected; --format overrides):
+# - Control-M: XML export, or CSV with columns job_name, command, depends_on, schedule
+# - Autosys: CSV with columns JOB_ID,JOB_NAME,JOB_DESCRIPTION,COMMAND,CONDITION,
+#   PARENT_JOB_NAME,TASK_NAME,PARAMETERS (one row per condition; duplicate rows
+#   are dropped and rows are grouped by JOB_NAME)
+job_export: ""   # e.g. /home/user/checkouts/jobs.xml or autosys_jobs.csv  ("" = skip job parsing)
+
+# File extensions treated as PL/SQL / Oracle SQL in Risk_DB (and anywhere else)
+plsql_extensions: [".sql", ".pls", ".pks", ".pkb", ".fnc", ".prc", ".trg", ".vw", ".tab", ".seq"]
+
+# Where results go. Per-unit agent results land in state/units/<unit_id>.json so a
+# re-run skips finished work automatically.
+output_dir: "output"
+state_dir: "state"
+
+analysis:
+  # Deterministic pre-classification thresholds (tune after the first sample run)
+  db_heavy_ratio: 1.6     # db_score / java_score above this  -> DB_HEAVY
+  java_heavy_ratio: 0.6   # db_score / java_score below this  -> JAVA_HEAVY
+  min_evidence: 3         # fewer total signals than this     -> NEEDS_REVIEW
+
+workflow:
+  # Knobs for the oracle-migration-review workflow (passed as launch args by preferred AI;
+  # batches of unit IDs are built from state/graph/units.json + state/units/ checkpoints).
+  concurrency: 4          # parallel batch agents; lower to burn quota slower
+  batch_size: 12          # units per batch agent; ~8-12 is a good cost/quality balance
+  # Tip: for a cheap first pass, build batches only from NEEDS_REVIEW / UNKNOWN units.

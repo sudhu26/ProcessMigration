@@ -1,0 +1,6 @@
+JOB_ID,JOB_NAME,JOB_DESCRIPTION,COMMAND,CONDITION,PARENT_JOB_NAME,TASK_NAME,PARAMETERS
+1001,NIGHTLY_RISK_JOB,Nightly risk batch,"java -Xmx4g -cp /opt/risk/lib/* com.risk.wm.jobs.NightlyRiskJob 2026-10-14",s(FEED_LANDED),RISK_BOX,NightlyRiskJob,2026-10-14
+1001,NIGHTLY_RISK_JOB,Nightly risk batch,"java -Xmx4g -cp /opt/risk/lib/* com.risk.wm.jobs.NightlyRiskJob 2026-10-14",s(MARKET_DATA_READY) AND s(FEED_LANDED),RISK_BOX,NightlyRiskJob,2026-10-14
+1001,NIGHTLY_RISK_JOB,Nightly risk batch,"java -Xmx4g -cp /opt/risk/lib/* com.risk.wm.jobs.NightlyRiskJob 2026-10-14",s(FEED_LANDED),RISK_BOX,NightlyRiskJob,2026-10-14
+1002,RISK_REPORT_JOB,Daily risk report,/opt/risk/bin/gen_report.sh daily,s(NIGHTLY_RISK_JOB),,gen_report.sh,daily
+1003,STALE_JOB,Old decommissioned job,/opt/risk/bin/old.sh,,,old.sh,

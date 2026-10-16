@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONTROLM>
+  <JOB JOBNAME="NIGHTLY_RISK_JOB" NODEID="batch01"
+       CMDLINE="java -Xmx4g -cp /opt/risk/lib/* com.risk.wm.jobs.NightlyRiskJob 2026-10-14"
+       DESCRIPTION="Nightly risk exposure batch">
+    <INCOND NAME="FEED_LANDED" ODATE="ODAT"/>
+    <OUTCOND NAME="RISK_DONE" ODATE="ODAT" SIGN="+"/>
+  </JOB>
+  <JOB JOBNAME="RISK_REPORT_JOB" NODEID="batch01"
+       CMDLINE="/opt/risk/bin/gen_report.sh daily"
+       DESCRIPTION="Risk report generator">
+    <INCOND NAME="RISK_DONE" ODATE="ODAT"/>
+  </JOB>
+</CONTROLM>
